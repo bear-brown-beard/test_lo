@@ -3,10 +3,9 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	"test_lo/internal/logger"
 	"test_lo/internal/models"
-
-	"github.com/go-chi/chi/v5"
 )
 
 type TaskService interface {
@@ -45,7 +44,10 @@ func (h *TaskHandler) CreateTaskHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *TaskHandler) GetTaskByIDHandler(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	// Получаем ID из URL: /tasks/{id}
+	path := strings.TrimPrefix(r.URL.Path, "/tasks")
+	id := strings.TrimPrefix(path, "/")
+
 	if id == "" {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
