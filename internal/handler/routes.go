@@ -1,44 +1,25 @@
 package handler
 
 import (
-	"net/http"
-	"strings"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
-type Routes struct {
-	taskHandler *TaskHandler
-}
+func SetupRoutes(dateHandler *DateHandler) *chi.Mux {
+	r := chi.NewRouter()
 
-func BuildRoutes(taskHandler *TaskHandler) *Routes {
-	return &Routes{
-		taskHandler: taskHandler,
-	}
-}
+	// Добавляем middleware для логирования
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
-func (r *Routes) SetupRoutes() http.Handler {
-	mux := http.NewServeMux()
+	// Маршруты для работы с датами
+	r.Route("/api", func(r chi.Router) {
+		r.Route("/dates", func(r chi.Router) {
+			r.Post("/", dateHandler.CreateDateEventHandler)    // POST /api/dates
+			r.Get("/", dateHandler.GetDateEventsHandler)       // GET /api/dates?person1=name1&person2=name2
+			r.Get("/all", dateHandler.GetAllDateEventsHandler) // GET /api/dates/all
+		})
+	})
 
-	// Обработчик для всех маршрутов /tasks
-	mux.HandleFunc("/tasks", r.handleTasks)
-
-	return mux
-}
-
-func (r *Routes) handleTasks(w http.ResponseWriter, req *http.Request) {
-	// Убираем /tasks из пути для получения оставшейся части
-	path := strings.TrimPrefix(req.URL.Path, "/tasks")
-
-	switch {
-	case req.Method == "POST" && path == "":
-		// POST /tasks - создание задачи
-		r.taskHandler.CreateTaskHandler(w, req)
-	case req.Method == "GET" && path == "":
-		// GET /tasks - получение всех задач
-		r.taskHandler.GetAllTasksHandler(w, req)
-	case req.Method == "GET" && strings.HasPrefix(path, "/"):
-		// GET /tasks/{id} - получение задачи по ID
-		r.taskHandler.GetTaskByIDHandler(w, req)
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
+	return r
 }
