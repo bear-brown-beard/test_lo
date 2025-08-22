@@ -2,9 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"event_service/internal/models"
 	"net/http"
 	"strconv"
-	"together_service/internal/models"
 
 	"github.com/go-chi/chi/v5"
 )

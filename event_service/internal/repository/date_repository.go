@@ -2,11 +2,11 @@ package repository
 
 import (
 	"context"
+	"event_service/internal/database"
+	"event_service/internal/models"
 	"fmt"
 	"sort"
 	"strings"
-	"together_service/internal/database"
-	"together_service/internal/models"
 )
 
 // DateRepositoryInterface интерфейс для работы с датами

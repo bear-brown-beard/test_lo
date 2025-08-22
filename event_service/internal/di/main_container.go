@@ -1,7 +1,7 @@
 package di
 
 import (
-	"together_service/internal/config"
+	"event_service/internal/config"
 )
 
 type MainContainer struct {

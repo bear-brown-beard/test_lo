@@ -1,4 +1,4 @@
-module together_service
+module event_service
 
 go 1.23.0
 

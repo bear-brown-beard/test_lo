@@ -2,8 +2,8 @@ package di
 
 import (
 	"context"
-	"together_service/internal/config"
-	"together_service/internal/database"
+	"event_service/internal/config"
+	"event_service/internal/database"
 )
 
 // DatabaseContainer контейнер для базы данных

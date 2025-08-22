@@ -1,8 +1,8 @@
 package di
 
 import (
-	"together_service/internal/repository"
-	"together_service/internal/service"
+	"event_service/internal/repository"
+	"event_service/internal/service"
 )
 
 type ServiceContainer struct {

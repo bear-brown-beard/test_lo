@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"event_service/internal/di"
+	"event_service/internal/handler"
 	"log"
 	"net/http"
 	"os"
@@ -9,8 +11,6 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"together_service/internal/di"
-	"together_service/internal/handler"
 )
 
 func main() {

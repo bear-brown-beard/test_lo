@@ -1,8 +1,8 @@
 package config
 
 import (
+	"event_service/internal/database"
 	"os"
-	"together_service/internal/database"
 )
 
 // Config конфигурация приложения

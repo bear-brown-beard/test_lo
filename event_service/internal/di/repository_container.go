@@ -1,8 +1,8 @@
 package di
 
 import (
-	"together_service/internal/database"
-	"together_service/internal/repository"
+	"event_service/internal/database"
+	"event_service/internal/repository"
 )
 
 // RepositoryContainer контейнер для репозиториев

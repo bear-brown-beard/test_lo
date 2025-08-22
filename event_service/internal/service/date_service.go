@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"event_service/internal/models"
+	"event_service/internal/repository"
 	"time"
-	"together_service/internal/models"
-	"together_service/internal/repository"
 )
 
 type DateService struct {
