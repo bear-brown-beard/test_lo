@@ -9,7 +9,7 @@ type ServiceContainer struct {
 	DateService *service.DateService
 }
 
-func NewServiceContainer(dateRepo repository.DateRepositoryInterface) *ServiceContainer {
+func NewServiceContainer(dateRepo *repository.DateRepository) *ServiceContainer {
 	dateService := service.NewDateService(dateRepo)
 
 	return &ServiceContainer{

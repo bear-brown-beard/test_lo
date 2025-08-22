@@ -11,7 +11,7 @@ import (
 
 type DateService interface {
 	SaveDateEvent(event models.DateEvent) error
-	GetAllDateEvents() (map[string][]models.DateEvent, error)
+	GetAllDateEvents() ([]models.DateEvent, error)
 	DeleteDateEvent(id int) error
 }
 
@@ -34,8 +34,8 @@ func (h *DateHandler) CreateDateEventHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	// Проверяем обязательные поля
-	if event.Person1Name == "" || event.Person2Name == "" || event.Description == "" {
-		http.Error(w, "Все поля обязательны для заполнения", http.StatusBadRequest)
+	if event.Description == "" {
+		http.Error(w, "Описание события обязательно для заполнения", http.StatusBadRequest)
 		return
 	}
 

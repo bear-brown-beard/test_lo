@@ -8,10 +8,10 @@ import (
 )
 
 type DateService struct {
-	repo repository.DateRepositoryInterface
+	repo *repository.DateRepository
 }
 
-func NewDateService(repo repository.DateRepositoryInterface) *DateService {
+func NewDateService(repo *repository.DateRepository) *DateService {
 	return &DateService{
 		repo: repo,
 	}
@@ -27,7 +27,7 @@ func (s *DateService) SaveDateEvent(event models.DateEvent) error {
 	return s.repo.Create(ctx, event)
 }
 
-func (s *DateService) GetAllDateEvents() (map[string][]models.DateEvent, error) {
+func (s *DateService) GetAllDateEvents() ([]models.DateEvent, error) {
 	ctx := context.Background()
 	return s.repo.GetAll(ctx)
 }

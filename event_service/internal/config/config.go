@@ -1,34 +1,29 @@
 package config
 
 import (
-	"event_service/internal/database"
 	"os"
 )
 
 // Config конфигурация приложения
 type Config struct {
-	Database database.Config
-	Server   ServerConfig
-}
-
-// ServerConfig конфигурация сервера
-type ServerConfig struct {
-	Port string
+	DBHost     string
+	DBPort     string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	DBSSLMode  string
+	ServerPort string
 }
 
 // Load загружает конфигурацию из переменных окружения
 func Load() *Config {
 	return &Config{
-		Database: database.Config{
-			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
-			User:     os.Getenv("DB_USER"),
-			Password: os.Getenv("DB_PASSWORD"),
-			DBName:   os.Getenv("DB_NAME"),
-			SSLMode:  os.Getenv("DB_SSLMODE"),
-		},
-		Server: ServerConfig{
-			Port: os.Getenv("SERVER_PORT"),
-		},
+		DBHost:     os.Getenv("DB_HOST"),
+		DBPort:     os.Getenv("DB_PORT"),
+		DBUser:     os.Getenv("DB_USER"),
+		DBPassword: os.Getenv("DB_PASSWORD"),
+		DBName:     os.Getenv("DB_NAME"),
+		DBSSLMode:  os.Getenv("DB_SSLMODE"),
+		ServerPort: os.Getenv("SERVER_PORT"),
 	}
 }

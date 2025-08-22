@@ -1,14 +1,18 @@
 package di
 
 import (
-	"context"
+	"fmt"
+	"log"
+
 	"event_service/internal/config"
-	"event_service/internal/database"
+
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // DatabaseContainer контейнер для базы данных
 type DatabaseContainer struct {
-	DB database.Database
+	DB *sqlx.DB
 }
 
 // NewDatabaseContainer создает новый контейнер для базы данных
@@ -16,28 +20,23 @@ func NewDatabaseContainer() (*DatabaseContainer, error) {
 	// Загружаем конфигурацию
 	cfg := config.Load()
 
-	// Создаем конфигурацию базы данных
-	dbConfig := database.Config{
-		Host:     cfg.Database.Host,
-		Port:     cfg.Database.Port,
-		User:     cfg.Database.User,
-		Password: cfg.Database.Password,
-		DBName:   cfg.Database.DBName,
-		SSLMode:  cfg.Database.SSLMode,
-	}
+	// Формируем строку подключения
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBSSLMode)
 
 	// Подключаемся к базе данных
-	db, err := database.NewPostgresDB(dbConfig)
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
 	// Проверяем соединение
-	ctx := context.Background()
-	if err := db.Ping(ctx); err != nil {
+	if err := db.Ping(); err != nil {
 		db.Close()
-		return nil, err
+		return nil, fmt.Errorf("database ping failed: %w", err)
 	}
+
+	log.Println("Подключение к БД установлено")
 
 	return &DatabaseContainer{
 		DB: db,
