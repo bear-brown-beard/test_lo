@@ -15,9 +15,9 @@ func SetupRoutes(dateHandler *DateHandler) *chi.Mux {
 	// Маршруты для работы с датами
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/dates", func(r chi.Router) {
-			r.Post("/", dateHandler.CreateDateEventHandler)    // POST /api/dates
-			r.Get("/", dateHandler.GetDateEventsHandler)       // GET /api/dates?person1=name1&person2=name2
-			r.Get("/all", dateHandler.GetAllDateEventsHandler) // GET /api/dates/all
+			r.Post("/", dateHandler.CreateDateEventHandler)       // POST /api/dates
+			r.Get("/all", dateHandler.GetAllDateEventsHandler)    // GET /api/dates/all
+			r.Delete("/{id}", dateHandler.DeleteDateEventHandler) // DELETE /api/dates/{id}
 		})
 	})
 

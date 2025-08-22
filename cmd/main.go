@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 	"together_service/internal/di"
@@ -13,6 +14,11 @@ import (
 )
 
 func main() {
+	// Загружаем переменные окружения из config.env
+	if err := loadEnvFile("config.env"); err != nil {
+		log.Printf("Предупреждение: не удалось загрузить config.env: %v", err)
+	}
+
 	// Создаем основной контейнер зависимостей
 	container, err := di.NewMainContainer()
 	if err != nil {
@@ -62,4 +68,29 @@ func main() {
 	}
 
 	log.Println("Сервер успешно остановлен")
+}
+
+// loadEnvFile загружает переменные окружения из файла
+func loadEnvFile(filename string) error {
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	lines := strings.Split(string(content), "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			os.Setenv(key, value)
+		}
+	}
+
+	return nil
 }

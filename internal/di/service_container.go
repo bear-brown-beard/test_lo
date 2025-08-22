@@ -5,14 +5,11 @@ import (
 	"together_service/internal/service"
 )
 
-// ServiceContainer контейнер для сервисов
 type ServiceContainer struct {
 	DateService *service.DateService
 }
 
-// NewServiceContainer создает новый контейнер для сервисов
-func NewServiceContainer(dateRepo *repository.DateRepository) *ServiceContainer {
-	// Создаем сервис дат
+func NewServiceContainer(dateRepo repository.DateRepositoryInterface) *ServiceContainer {
 	dateService := service.NewDateService(dateRepo)
 
 	return &ServiceContainer{

@@ -10,9 +10,7 @@ type RepositoryContainer struct {
 	DateRepository *repository.DateRepository
 }
 
-// NewRepositoryContainer создает новый контейнер для репозиториев
 func NewRepositoryContainer(db database.Database) *RepositoryContainer {
-	// Создаем репозиторий дат
 	dateRepo := repository.NewDateRepository(db)
 
 	return &RepositoryContainer{

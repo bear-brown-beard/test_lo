@@ -3,13 +3,16 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"together_service/internal/models"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type DateService interface {
 	SaveDateEvent(event models.DateEvent) error
-	GetDateEvents(person1Name, person2Name string) ([]models.DateEvent, error)
 	GetAllDateEvents() (map[string][]models.DateEvent, error)
+	DeleteDateEvent(id int) error
 }
 
 type DateHandler struct {
@@ -49,26 +52,6 @@ func (h *DateHandler) CreateDateEventHandler(w http.ResponseWriter, r *http.Requ
 	})
 }
 
-// GetDateEventsHandler обрабатывает GET запрос для получения событий пары
-func (h *DateHandler) GetDateEventsHandler(w http.ResponseWriter, r *http.Request) {
-	person1Name := r.URL.Query().Get("person1")
-	person2Name := r.URL.Query().Get("person2")
-
-	if person1Name == "" || person2Name == "" {
-		http.Error(w, "Необходимо указать имена обоих людей", http.StatusBadRequest)
-		return
-	}
-
-	events, err := h.service.GetDateEvents(person1Name, person2Name)
-	if err != nil {
-		http.Error(w, "Ошибка получения событий", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(events)
-}
-
 // GetAllDateEventsHandler обрабатывает GET запрос для получения всех событий
 func (h *DateHandler) GetAllDateEventsHandler(w http.ResponseWriter, r *http.Request) {
 	events, err := h.service.GetAllDateEvents()
@@ -79,4 +62,32 @@ func (h *DateHandler) GetAllDateEventsHandler(w http.ResponseWriter, r *http.Req
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(events)
+}
+
+// DeleteDateEventHandler обрабатывает DELETE запрос для удаления события
+func (h *DateHandler) DeleteDateEventHandler(w http.ResponseWriter, r *http.Request) {
+	// Получаем ID из URL path
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "Необходимо указать ID события", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Неверный формат ID", http.StatusBadRequest)
+		return
+	}
+
+	// Удаляем событие
+	if err := h.service.DeleteDateEvent(id); err != nil {
+		http.Error(w, "Ошибка удаления события", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Событие успешно удалено",
+	})
 }

@@ -44,7 +44,6 @@ func NewDatabaseContainer() (*DatabaseContainer, error) {
 	}, nil
 }
 
-// Close закрывает контейнер базы данных
 func (c *DatabaseContainer) Close() error {
 	return c.DB.Close()
 }

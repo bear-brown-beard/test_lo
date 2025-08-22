@@ -2,23 +2,13 @@ package config
 
 import (
 	"os"
-	"strconv"
+	"together_service/internal/database"
 )
 
 // Config конфигурация приложения
 type Config struct {
-	Database DatabaseConfig
+	Database database.Config
 	Server   ServerConfig
-}
-
-// DatabaseConfig конфигурация базы данных
-type DatabaseConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
 }
 
 // ServerConfig конфигурация сервера
@@ -28,27 +18,17 @@ type ServerConfig struct {
 
 // Load загружает конфигурацию из переменных окружения
 func Load() *Config {
-	port, _ := strconv.Atoi(getEnv("DB_PORT", "5432"))
-
 	return &Config{
-		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     port,
-			User:     getEnv("DB_USER", "together_user"),
-			Password: getEnv("DB_PASSWORD", "jj0545bk"),
-			DBName:   getEnv("DB_NAME", "together_db"),
-			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+		Database: database.Config{
+			Host:     os.Getenv("DB_HOST"),
+			Port:     os.Getenv("DB_PORT"),
+			User:     os.Getenv("DB_USER"),
+			Password: os.Getenv("DB_PASSWORD"),
+			DBName:   os.Getenv("DB_NAME"),
+			SSLMode:  os.Getenv("DB_SSLMODE"),
 		},
 		Server: ServerConfig{
-			Port: getEnv("SERVER_PORT", "8080"),
+			Port: os.Getenv("SERVER_PORT"),
 		},
 	}
-}
-
-// getEnv получает значение переменной окружения или возвращает значение по умолчанию
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
 }
